@@ -9,7 +9,7 @@ Make sure you have the NanoTTS synthesizer installed and added to your $PATH.
 
 ## Usage
 
-The NanoTTS python wrapper provides to methods to generate speech, one from a string input, the other from a text file.
+The NanoTTS python wrapper provides two methods to generate speech, one from a string input, the other from a text file.
 
 ```python
 import nanotts
