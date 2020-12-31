@@ -3,6 +3,15 @@ import shutil
 import logging
 import subprocess
 
+
+MIN_SPEED = 0.2
+MAX_SPEED = 5.0
+MIN_PITCH = 0.5
+MAX_PITCH = 2.0
+MIN_VOLUME = 0.0
+MAX_VOLUME = 5.0
+
+
 class NanoTTS():
   def __init__(self, 
                voice=None, 
@@ -16,17 +25,17 @@ class NanoTTS():
     if not self._executableInPath():
       raise Exception("Can't find nanotts executable. Make sure to add it to the $PATH.")
 
-    self._outputFile = outputFile
-    self._play = play
-    self._speed = speed
-    self._pitch = pitch
-    self._volume = volume
+    self.outputFile = outputFile
+    self.play = play
+    self.speed = speed
+    self.pitch = pitch
+    self.volume = volume
+
     self._voices = self._getVoices()
-    self._voice = voice if self._voiceAvailable else None
+    self.voice = voice
     
-    self._loglevel = loglevel
     self._logger = logging.getLogger()
-    self._logger.setLevel(self._loglevel)
+    self.loglevel = loglevel
 
   def _executableInPath(self):
     return shutil.which("nanotts") is not None
@@ -34,25 +43,25 @@ class NanoTTS():
   def _getCommand(self):
     cmd = ["nanotts"]
     
-    if self._voice is not None: 
+    if self.voice is not None: 
       cmd.append("--voice")
-      cmd.append(self._voice)
-    if self._outputFile is not None: 
+      cmd.append(self.voice)
+    if self.outputFile is not None: 
       cmd.append("-o")
-      cmd.append(self._outputFile)
-    if self._play: cmd.append("-p")
-    if self._speed is not None: 
+      cmd.append(self.outputFile)
+    if self.play: cmd.append("-p")
+    if self.speed is not None: 
       cmd.append("--speed")
-      cmd.append(str(self._speed))
-    if self._pitch is not None: 
+      cmd.append(str(self.speed))
+    if self.pitch is not None: 
       cmd.append("--pitch")
-      cmd.append(str(self._pitch))
-    if self._volume is not None:
+      cmd.append(str(self.pitch))
+    if self.volume is not None:
       cmd.append("--volume")
-      cmd.append(str(self._volume))
+      cmd.append(str(self.volume))
 
-    if not self._play and self._outputFile is None:
-      raise Exception("No output method specified. You need to set at least one of 'play' and 'output'.")
+    if not self.play and self.outputFile is None:
+      raise Exception("No output method specified. You need to set at least one of 'play' and 'outputFile'.")
     return cmd
 
   def speak(self, input_file):
@@ -76,12 +85,13 @@ class NanoTTS():
   @voice.setter
   def voice(self, voice):
     if voice is not None and not self._voiceAvailable(voice):
-      warning = "Language '" + voice + "' is not available. Select voices from:\n"
-      for v in self._voices: warning += "- " + v + "\n"
-      old_voice = self._voice if self._voice is not None else "en-GB"
-      warning += "Chosen voice is still " + old_voice + "."
+      warning = f"Language '{voice:s}' is not available. Select voices from:\n"
+      for v in self._voices: warning += f"- {v:s}\n"
       logging.warning(warning)
-      return
+      try:
+        voice = self.voice
+      except AttributeError:
+        voice = None
     self._voice = voice
 
   @property
@@ -90,7 +100,7 @@ class NanoTTS():
 
   @speed.setter
   def speed(self, speed):
-    self._speed = speed
+    self._speed = self._getValidValue(speed, MIN_SPEED, MAX_SPEED, "speed")
 
   @property
   def pitch(self):
@@ -98,7 +108,7 @@ class NanoTTS():
 
   @pitch.setter
   def pitch(self, pitch):
-    self._pitch = pitch
+    self._pitch = self._getValidValue(pitch, MIN_PITCH, MAX_PITCH, "pitch")
 
   @property
   def volume(self):
@@ -106,7 +116,7 @@ class NanoTTS():
 
   @volume.setter
   def volume(self, volume):
-    self._volume = volume
+    self._volume = self._getValidValue(volume, MIN_VOLUME, MAX_VOLUME, "volume")
   
   @property
   def outputFile(self):
@@ -145,3 +155,15 @@ class NanoTTS():
         voices.append(filename[0:5])
     return voices
 
+  def _getValidValue(self, value, min_value, max_value, value_name):
+    if value is None: 
+      return None
+    
+    if value < min_value or value > max_value: 
+      logging.warning("Chosen value for %s outside allowed range from %2.1f. to %2.1f.", value_name, min_value, max_value)
+      if value < min_value:
+        logging.warning("Setting %s to %2.1f.", value_name, min_value)
+      else:
+        logging.warning("Setting %s to %2.1f.", value_name, max_value)
+
+    return min(max(value, min_value), max_value)
