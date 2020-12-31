@@ -22,8 +22,9 @@ class NanoTTS():
                volume=None,
                loglevel=logging.INFO):
 
-    if not self._executableInPath():
+    if shutil.which("nanotts") is None:
       raise Exception("Can't find nanotts executable. Make sure to add it to the $PATH.")
+    self._path = shutil.which("nanotts")[:-7] 
 
     self.outputFile = outputFile
     self.play = play
@@ -37,11 +38,8 @@ class NanoTTS():
     self._logger = logging.getLogger()
     self.loglevel = loglevel
 
-  def _executableInPath(self):
-    return shutil.which("nanotts") is not None
-
   def _getCommand(self):
-    cmd = ["nanotts"]
+    cmd = ["nanotts", "-l", self._path + "lang"]
     
     if self.voice is not None: 
       cmd.append("--voice")
@@ -147,7 +145,7 @@ class NanoTTS():
     return voice in self._voices
 
   def _getVoices(self):
-    lang_dir = os.fsencode(shutil.which("nanotts")[:-7] + "lang")
+    lang_dir = os.fsencode(self._path + "lang")
     voices = []
     for f in os.listdir(lang_dir):
       filename = os.fsdecode(f)

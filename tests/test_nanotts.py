@@ -2,7 +2,7 @@ import unittest
 
 import nanotts
 import logging
-
+import os
 
 class TestNanoTTS(unittest.TestCase):
 
