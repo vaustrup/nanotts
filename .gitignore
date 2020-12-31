@@ -1,0 +1,4 @@
+.coverage
+.nanotts.py.swp
+__pycache__/
+
