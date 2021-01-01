@@ -1,4 +1,6 @@
 .coverage
 .nanotts.py.swp
 __pycache__/
-
+build/
+dist/
+nanotts.egg-info/
