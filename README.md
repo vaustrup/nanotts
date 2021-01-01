@@ -25,11 +25,11 @@ ntts.speak("input.txt")
 
 The attributes that can be set are described below:
 
-* `loglevel`: set loglevel for the logging module (i.e. `logging.*`)
-* `outputFile`: set name of the output .wav file (at least one of `outputFile` and `play` has to be set)
-* `pitch`: set pitch in range [0.5, 2.0]
-* `play`: toggle whether to directly play the created speech (at least one of `outputFile` and `play` jas to be set)
-* `speed`: set speed in range [0.2, 5.0]
-* `voice`: choose language from "de-DE", "en-GB", "en-US", "es-ES", "fr-FR", "it-IT"
-* `volume`: set volume in range [0.0, 5.0]
+* `loglevel` [default: `logging.INFO`): set loglevel for the logging module (i.e. `logging.*`)
+* `outputFile` [default: `None`: set name of the output .wav file (at least one of `outputFile` and `play` has to be set)
+* `pitch` [default: `1.0`]: set pitch in range [0.5, 2.0]
+* `play` [default: `False`]: toggle whether to directly play the created speech (at least one of `outputFile` and `play` has to be set)
+* `speed` [default: `1.0`]: set speed in range [0.2, 5.0]
+* `voice` [default: `"en-GB"`]: choose language from "de-DE", "en-GB", "en-US", "es-ES", "fr-FR", "it-IT"
+* `volume` [default: `1.0`]: set volume in range [0.0, 5.0]
 
