@@ -98,7 +98,7 @@ class NanoTTS():
 
   @speed.setter
   def speed(self, speed):
-    self._speed = self._getValidValue(speed, MIN_SPEED, MAX_SPEED, "speed")
+    self._speed = NanoTTS._getValidValue(speed, MIN_SPEED, MAX_SPEED, "speed")
 
   @property
   def pitch(self):
@@ -106,7 +106,7 @@ class NanoTTS():
 
   @pitch.setter
   def pitch(self, pitch):
-    self._pitch = self._getValidValue(pitch, MIN_PITCH, MAX_PITCH, "pitch")
+    self._pitch = NanoTTS._getValidValue(pitch, MIN_PITCH, MAX_PITCH, "pitch")
 
   @property
   def volume(self):
@@ -114,7 +114,7 @@ class NanoTTS():
 
   @volume.setter
   def volume(self, volume):
-    self._volume = self._getValidValue(volume, MIN_VOLUME, MAX_VOLUME, "volume")
+    self._volume = NanoTTS._getValidValue(volume, MIN_VOLUME, MAX_VOLUME, "volume")
   
   @property
   def outputFile(self):
@@ -153,12 +153,13 @@ class NanoTTS():
         voices.append(filename[0:5])
     return voices
 
-  def _getValidValue(self, value, min_value, max_value, value_name):
+  @staticmethod
+  def _getValidValue(value, min_value, max_value, value_name):
     if value is None: 
       return None
     
     if value < min_value or value > max_value: 
-      logging.warning("Chosen value for %s outside allowed range from %2.1f. to %2.1f.", value_name, min_value, max_value)
+      logging.warning("Chosen value for %s outside allowed range from %2.1f to %2.1f.", value_name, min_value, max_value)
       if value < min_value:
         logging.warning("Setting %s to %2.1f.", value_name, min_value)
       else:
