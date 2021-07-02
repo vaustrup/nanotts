@@ -1,3 +1,5 @@
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 # NanoTTS python wrapper
 
 This package is a python wrapper for the NanoTTS speech synthesizer utility as described here: https://github.com/gmn/nanotts.
